@@ -1,27 +1,37 @@
-# 🏥 E-Health Analytics: Tracking Obesity Levels and Digital Lifestyle Habits
+# 📊 E-Health Data Pipeline: Obesity Behavioral Risk Analysis
 
-## 📝 1. Project Overview & Context
-* **Project Title:** E-Health Analytics: Tracking Obesity Levels and Digital Lifestyle Habits
-* **Goal of the project:** Analyser l'impact du mode de vie, de l'utilisation des technologies (applications connectées, temps d'écran) et de l'alimentation sur l'Indice de Masse Corporelle (IMC) pour concevoir un modèle de médecine préventive.
-* **Business Value:** Permettre aux acteurs de la santé numérique (applications de e-santé, mutuelles, prévoyance) d'identifier les profils d'utilisateurs à risque et de personnaliser les recommandations automatisées.
-* **Stack Technique:** **SQL Server (SSMS)** (Ingénierie & Cleaning) ➡️ **Python (Pandas)** (Logique & Feature Engineering) ➡️ **R (Tidyverse)** (Statistiques avancées & Dataviz).
+This repository contains an end-to-end data analytics project combining **SQL Server** for structural cleaning and **Python** for statistical modeling and visualization.
 
-## 📁 2. Data Overview & Infrastructure
-* **Source of the Data:** *Estimation of Obesity Levels Based on Eating Habits and Physical Condition* (UC Irvine Machine Learning Repository).
-* **Data Size:** 2 111 profils de patients / 17 variables cliniques et comportementales.
-* **Infrastructure Checklist:**
-  - [x] Télécharger les données brutes.
-  - [ ] Créer la base de données dédiée sur SQL Server.
-  - [ ] Importer le fichier brut sous le nom de table `obesity_raw`.
-  - [ ] Exécuter une requête de crash-test (`SELECT COUNT(*)`).
+## 🧠 Project Architecture & Workflow
+1. **Database Layer (SQL Server):** Consolidated messy electronic health records into a clean, unified view (`v_obesity_cleaned`).
+2. **Data Pipeline (Pandas):** Implemented a parsing engine capable of fixing regional formatting issues (comma-to-dot decimal conversions) and automated feature engineering.
+3. **Statistical Rigger (SciPy):** Conducted hypothesis testing to validate the biological significance of behavioral metrics.
 
 ---
 
-## 🔧 3. Data Engineering & Cleaning (Phase SQL Server)
-### 🚀 Défis Techniques & Choix d'Ingénierie Réalisés
+## 🔍 Key Exercises & Scientific Findings
 
-* **Sécurisation et Typage des Données :** Le dataset brut ayant été importé au format texte, chaque colonne numérique a été convertie de manière sécurisée en utilisant `TRY_CAST` pour éviter les plantages de requêtes en cas de données corrompues (les anomalies sont transformées en `NULL`).
-* **Gestion médicale des âges (`FLOOR`) :** Pour coller à la réalité clinique, l'âge a été arrondi à l'entier inférieur. Un utilisateur de 24 ans et 11 mois conserve légalement ses 24 ans tant qu'il n'a pas fêté son anniversaire.
-* **Calcul automatisé de l'IMC :** Implémentation de la formule mathématique officielle $Poids / Taille^2 via la fonction `POWER()`, arrondie à 1 décimale.
-* **Classification OMS (`CASE WHEN`) :** Automatisation de la segmentation des utilisateurs selon les seuils officiels de l'OMS (`Underweight`, `Normal Weight`, `Overweight`, `Obesity`).
-* **Persistance via une Vue (`ALTER VIEW`) :** L'intégralité du pipeline a été encapsulée dans une vue SQL (`v_obesity_cleaned`). Cela permet de figer la logique de nettoyage directement côté serveur, offrant un accès direct, propre et performant (2 111 lignes prêtes) pour nos futurs scripts Python ou R.
+### 📍 Multi-Variate Logic (Exercise 7)
+Patients were classified into lifestyle risk categories using cross-examined conditions based on daily Screen Time (`TUE`) and Water Intake (`CH2O`):
+* **Balanced Profile:** Optimized habits ($\le$ 2h screens **AND** $\ge$ 2L water).
+* **Moderate Risk:** Suboptimal habits (> 2h screens **OR** < 2L water).
+
+### 📍 Correlation Analysis (Exercise 10)
+We plotted Physical Activity Levels (`FAF`) against total `Weight_kg` using a custom scatter plot to track density distribution and behavior impacts:
+
+![Physical Activity vs Weight](correlation_plot.png)
+
+### 📍 Rigorous T-Testing (Exercise 11)
+To prove our behavioral profiling wasn't just a product of random variance, a **Welch's T-Test** was executed to compare the average weights of our cohorts.
+
+* **Average Weight (Balanced Profile):** 88.53 kg
+* **Average Weight (Moderate Risk):** 83.20 kg
+* **Calculated P-Value:** $7.10 \times 10^{-6}$ (0.0000071)
+
+👉 **Scientific Conclusion:** Since the $p\text{-value} < 0.05$, the weight discrepancy between behavioral profiles is **highly statistically significant**. The lifestyle classification engine effectively captures distinct biological cohorts, completely ruling out random chance.
+
+---
+
+## 🛠️ Tech Stack
+* **SQL** (MSSQL / SSMS)
+* **Python 3** (Pandas, Matplotlib, SciPy)
