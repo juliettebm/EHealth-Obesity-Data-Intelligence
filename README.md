@@ -18,4 +18,10 @@
 ---
 
 ## 🔧 3. Data Engineering & Cleaning (Phase SQL Server)
-*(En cours de construction... 🛠️)*
+### 🚀 Défis Techniques & Choix d'Ingénierie Réalisés
+
+* **Sécurisation et Typage des Données :** Le dataset brut ayant été importé au format texte, chaque colonne numérique a été convertie de manière sécurisée en utilisant `TRY_CAST` pour éviter les plantages de requêtes en cas de données corrompues (les anomalies sont transformées en `NULL`).
+* **Gestion médicale des âges (`FLOOR`) :** Pour coller à la réalité clinique, l'âge a été arrondi à l'entier inférieur. Un utilisateur de 24 ans et 11 mois conserve légalement ses 24 ans tant qu'il n'a pas fêté son anniversaire.
+* **Calcul automatisé de l'IMC :** Implémentation de la formule mathématique officielle $Poids / Taille^2 via la fonction `POWER()`, arrondie à 1 décimale.
+* **Classification OMS (`CASE WHEN`) :** Automatisation de la segmentation des utilisateurs selon les seuils officiels de l'OMS (`Underweight`, `Normal Weight`, `Overweight`, `Obesity`).
+* **Persistance via une Vue (`ALTER VIEW`) :** L'intégralité du pipeline a été encapsulée dans une vue SQL (`v_obesity_cleaned`). Cela permet de figer la logique de nettoyage directement côté serveur, offrant un accès direct, propre et performant (2 111 lignes prêtes) pour nos futurs scripts Python ou R.
